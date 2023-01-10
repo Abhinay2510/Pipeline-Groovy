@@ -11,7 +11,7 @@ pipeline {
             steps {
                 load "parameters.groovy"
             }
-        }	
+        }
         stage('SAST Analysis') {
             steps {
                 script {
@@ -38,9 +38,9 @@ pipeline {
 			      script {
 						try {
 							bat '''
-							wget https://github.com/jeremylong/DependencyCheck/releases/download/v6.2.2/dependency-check-6.2.2-release.zip
+							wget "https://github.com/jeremylong/DependencyCheck/releases/download/v6.2.2/dependency-check-6.2.2-release.zip
 							 PowerShell Expand-Archive -Path "dependency-check-6.2.2-release.zip"  
-							./dependency-check-6.2.2-release/dependency-check/bin/dependency-check.bat --noupdate --project "TeachersFCU" --scan "Shoppingcart/lib/" --format HTML --out .
+							./dependency-check-6.2.2-release/dependency-check/bin/dependency-check.bat --noupdate --project "TeachersFCU" --scan "Shoppingcart/lib/" --format HTML --out . 
 						    '''
 						} catch (err) {
 							echo err.getMessage()
@@ -72,19 +72,28 @@ pipeline {
      stage("deploy") {
          steps {
 					script {
-						try {
-						if (env.TOMCAT_IP != 'null') {						
-            deploy adapters: [tomcat8(credentialsId: 'tomcat', path: '', url: '${env.TOMCAT_IP}')], contextPath: null, onFailure: false, war: '**/*.war'
-					        } else {
-                                                        echo 'skipping the stage ${env.STAGE_NAME}.............................!'	    
-					}	} catch (err) {
-							echo err.getMessage()
-							unstable(message: "${STAGE_NAME} is unstable")
-							echo "Error detected, ${env.STAGE_NAME} failed..................!"
-						}		
+				
+            deploy adapters: [tomcat8(credentialsId: 'tomcat webserver', path: '', url: 'http://localhost:8084/')], contextPath: null, war: '**/*.war'
 					}
 				}
 	}
+        stage('DAST') {
+            steps {
+                script {
+                    try {
+						if (env.DAST_IP != 'null') {		    
+                       arachniScanner checks: '*', format: 'html', url: 'http://localhost:8084/hello-world/'
+					        } else {
+                                                        echo 'skipping the stage ${env.STAGE_NAME}.............................!'                       
+             }       } catch (err) {
+							echo err.getMessage()
+							unstable(message: "${STAGE_NAME} is unstable")
+							echo "Error detected, ${env.STAGE_NAME} failed..................!"                       
+                    }
+                }
+            }
+        }	
+	
 	stage('FunctionalAutomation_Web') {
            			steps {
 		   			script {
@@ -121,22 +130,6 @@ pipeline {
 					}
 				}
 	}
-        stage('DAST') {
-            steps {
-                script {
-                    try {
-						if (env.DAST_IP != 'null') {		    
-                       arachniScanner checks: '*', format: 'html', url: 'http://mypublicip:8084/SpringMVCAnnotationShoppingCart/'
-					        } else {
-                                                        echo 'skipping the stage ${env.STAGE_NAME}.............................!'                       
-             }       } catch (err) {
-							echo err.getMessage()
-							unstable(message: "${STAGE_NAME} is unstable")
-							echo "Error detected, ${env.STAGE_NAME} failed..................!"                       
-                    }
-                }
-            }
-        }
 	        stage('Performance') {
             			steps {
 		   			script {
@@ -146,7 +139,7 @@ pipeline {
                             git clone ${env.JMETER_GIT_URL}
 			    dir
                             cd folder
-                            C:/Windows/System32/config/systemprofile/AppData/Local/Jenkins/.jenkins/workspace/dynamic-job/folder/apache-jmeter-5.4.1/apache-jmeter-5.4.1/bin/jmeter.bat -n -t OnlineShop_1.jmx -l OnlineShop_result.jtl -e -o OnlineShop_%BUILD_NUMBER%.html
+                            C:/ProgramData/Jenkins/.jenkins/workspace/${JOB_NAME}/folder/apache-jmeter-5.4.1/apache-jmeter-5.4.1/bin/jmeter.bat -n -t OnlineShop_1.jmx -l OnlineShop_result.jtl -e -o OnlineShop_%BUILD_NUMBER%.html
             					 """
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'						 
@@ -157,56 +150,17 @@ pipeline {
 							}
 					}
 			}
-		} 
-        stage('Nexus') {
-            steps {
-                
-               bat 'tar -a -c -f web-test-report-%BUILD_NUMBER%.zip webtest/target/surefire-reports/*'
-               bat 'tar -a -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
-               bat 'tar -a -c -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
-               bat '''mkdir test-reports
-               
-               cd test-reports
-               
-               curl -T "C:/Windows/System32/config/systemprofile/AppData/Local/Jenkins/.jenkins/workspace/dynamic-job/Shoppingcart/.scannerwork/report-task.txt" -u admin:admin123 -v http://localhost:8081/repository/maven-central-repo/sast-reports/ 
-               curl -T "C:/Windows/System32/config/systemprofile/AppData/Local/Jenkins/.jenkins/workspace/dynamic-job/web-test-report-%BUILD_NUMBER%.zip" -u admin:admin123 -v http://localhost:8081/repository/maven-central-repo/web-test-report/ 
-               curl -T "C:/Windows/System32/config/systemprofile/AppData/Local/Jenkins/.jenkins/workspace/dynamic-job/mobile-test-report-%BUILD_NUMBER%.zip" -u admin:admin123 -v http://localhost:8081/repository/maven-central-repo/mobile-test-report/ 
-               curl -T "C:/Windows/System32/config/systemprofile/AppData/Local/Jenkins/.jenkins/workspace/dynamic-job/jmeter-test-report-%BUILD_NUMBER%.zip" -u admin:admin123 -v http://localhost:8081/repository/maven-central-repo/jmeter-test-report/ 
-               curl -T "C:/Windows/System32/config/systemprofile/AppData/Local/Jenkins/.jenkins/workspace/dynamic-job/arachni-report-html.zip" -u admin:admin123 -v http://localhost:8081/repository/maven-central-repo/dast-test-report/ 
-               '''
-                           }
-        }         
-    }
+		} 	
+	}
  	post {
-        // Clean after build
+        //Clean after build
         always {
-		mail to: 'nihas0505@gmail.com',
+		mail to: "${env.MAIL_ID}",
         subject: "Status of pipeline: ${currentBuild.fullDisplayName}",
-        body: """${env.BUILD_URL} has result ${currentBuild.result}
-        
-		Please find build reports................................!
-		
-		SAST REPORTS
-		http://localhost:8081/repository/maven-central-repo/sast-reports/report-task.txt
-		--------------------------------------------------------------------------------------------------------------------------------------
-		FUNCTIONAL AUTOMATION WEB REPORTS
-		http://localhost:8081/repository/maven-central-repo/web-test-report/web-test-report-%BUILD_NUMBER%.zip
-		----------------------------------------------------------------------------------------------------------------------------------------
-		FUNCTIONAL AUTOMATION MOBILE REPORTS
-		http://localhost:8081/repository/maven-central-repo/mobile-test-report/mobile-test-report-%BUILD_NUMBER%.zip
-		------------------------------------------------------------------------------------------------------------------------------------------
-		-----------------------------------------------------------------------------------------------------------------------------------------
-		JMETER REPORTS
-		http://localhost:8081/repository/maven-central-repo/jmeter-test-report/jmeter-test-report-%BUILD_NUMBER%.zip
-		
-		----------------------------------------------------------------------------------------------------------------------------------------
-		DAST REPORTS
-		http://localhost:8081/repository/maven-central-repo/dast-test-report/arachni-report-html-%BUILD_NUMBER%.zip
-		
-		
-		THE PIPELINE IS SUCCESSFULL AND THIS MAIL IS TO REQUEST FOR QA SIGNOFF AND PROCEED TO UAT 0R PROD ENV
-		
-		For more information please contact DEVSECOPS team...........!"""        
-        }
-    }     
+        body: "Result - ${currentBuild.result}"
+	cleanWs(cleanWhenNotBuilt: false,
+        deleteDirs: true,
+        disableDeferredWipeout: true)
+}
+}
 }
