@@ -73,7 +73,7 @@ pipeline {
          steps {
 					script {
 				
-            deploy adapters: [tomcat8(credentialsId: 'tomcat webserver', path: '', url: 'http://localhost:8084/')], contextPath: null, war: '**/*.war'
+            deploy adapters: [tomcat8(credentialsId: 'tomcat webserver', path: '', url: "${env.TOMCAT_IP}")], contextPath: null, war: '**/*.war'
 					}
 				}
 	}
