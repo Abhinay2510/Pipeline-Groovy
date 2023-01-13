@@ -73,8 +73,8 @@ pipeline {
          steps {
 					script {
 						try {					
-						if (env.TOMCAT_IP != 'null') {						
-            deploy adapters: [tomcat8(credentialsId: 'tomcat webserver', path: '', url: "${env.TOMCAT_IP}")], contextPath: null, war: '**/*.war'
+						if (env.Deployment != 'null') {						
+            deploy adapters: [tomcat8(credentialsId: 'tomcat webserver', path: '', url: "${env.Deployment}")], contextPath: null, war: '**/*.war'
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'	    
 					}	} catch (err) {
