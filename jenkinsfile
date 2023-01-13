@@ -169,11 +169,11 @@ pipeline {
                bat '''mkdir test-reports
                
                cd test-reports	       
-               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/fail/Shoppingcart/.scannerwork/report-task.txt" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/sast-reports/
-	       curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/fail/arachni-report-html.zip" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/DAST-REPORTS/
-               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/fail/web-test-report-%BUILD_NUMBER%.zip" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/web-test-report/ 
-               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/fail/mobile-test-report-%BUILD_NUMBER%.zip" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/mobile-test-report/      
-               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/fail/jmeter-test-report-%BUILD_NUMBER%.zip" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/jmeter/
+               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/sreeinfra/Shoppingcart/.scannerwork/report-task.txt" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/sast-reports/
+	       curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/sreeinfra/arachni-report-html.zip" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/DAST-REPORTS/
+               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/sreeinfra/web-test-report-%BUILD_NUMBER%.zip" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/web-test-report/ 
+               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/sreeinfra/mobile-test-report-%BUILD_NUMBER%.zip" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/mobile-test-report/      
+               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/sreeinfra/jmeter-test-report-%BUILD_NUMBER%.zip" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/jmeter/
                '''
                            }
         }              
