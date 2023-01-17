@@ -186,6 +186,9 @@ pipeline {
         body: """Result is ${currentBuild.result}
         
 		Please find build reports................................!
+		
+		Nexus Credentials-(username:admin,password:admin123)		
+		
 		SAST REPORTS
 		http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/sast-reports/report-task.txt
 		https://sonarcloud.io/dashboard?id=Shoppingcart
