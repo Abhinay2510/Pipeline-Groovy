@@ -74,7 +74,7 @@ pipeline {
 					script {
 						try {					
 						if (env.Deployment != 'null') {						
-            deploy adapters: [tomcat8(credentialsId: 'tomcat webserver', path: '', url: "${env.Deployment}")], contextPath: null, war: '**/*.war'
+            deploy adapters: [tomcat8(credentialsId: 'Tomcat', path: '', url: "${env.Deployment}")], contextPath: null, war: '**/*.war'
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'	    
 					}	} catch (err) {
@@ -108,8 +108,10 @@ pipeline {
 						try {
 						if (env.FUNCTIONAL_WEB_GIT_URL != 'null') {						
 							bat """git clone ${env.FUNCTIONAL_WEB_GIT_URL}
-							cd webtest
-							mvn test """
+							cd NuReCampus
+							cd NureCampus_workingcopy
+							mvn test -DQAURL=https://erp.campuslabs.in/qa/dashboard-login -Dcucumber.features="C:/ProgramData/Jenkins/.jenkins/workspace/%JOB_NAME%/NureCampus_workingcopy/src/test/java/com/NuReCampus/Features/NuReCampus_login.feature"  
+							"""
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'														
 					}	} catch (err) {
@@ -163,17 +165,17 @@ pipeline {
             steps {
                 
               
-	       bat 'tar -a -c -f web-test-report-%BUILD_NUMBER%.zip webtest/target/surefire-reports/* '
+	       bat 'tar -a -c -f web-test-report-%BUILD_NUMBER%.zip NuReCampus/NureCampus_workingcopy/target/surefire-reports/* '
 	       bat 'tar -a -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
 	       bat 'tar -a -c -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
                bat '''mkdir test-reports
                
                cd test-reports	       
-               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/%JOB_NAME%/Shoppingcart/.scannerwork/report-task.txt" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/sast-reports/
-	       curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/%JOB_NAME%/arachni-report-html.zip" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/DAST-REPORTS/
-               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/%JOB_NAME%/web-test-report-%BUILD_NUMBER%.zip" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/web-test-report/ 
-               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/%JOB_NAME%/mobile-test-report-%BUILD_NUMBER%.zip" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/mobile-test-report/      
-               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/%JOB_NAME%/jmeter-test-report-%BUILD_NUMBER%.zip" -u admin:admin123 -v http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/jmeter/
+               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/%JOB_NAME%/Shoppingcart/.scannerwork/report-task.txt" -u admin:flexib -v http://43.204.5.162:8081/repository/flexib3i-Pipeline-Reports/sast-reports/
+	       curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/%JOB_NAME%/arachni-report-html.zip" -u admin:flexib -v http://43.204.5.162:8081/repository/flexib3i-Pipeline-Reports/DAST-REPORTS/
+               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/%JOB_NAME%/web-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://43.204.5.162:8081/repository/flexib3i-Pipeline-Reports/web-test-report/ 
+               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/%JOB_NAME%/mobile-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://43.204.5.162:8081/repository/flexib3i-Pipeline-Reports/mobile-test-report/      
+               curl -T "C:/ProgramData/Jenkins/.jenkins/workspace/%JOB_NAME%/jmeter-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://43.204.5.162:8081/repository/flexib3i-Pipeline-Reports/jmeter/
                '''
                            }
         }              
@@ -187,27 +189,26 @@ pipeline {
         
 		Please find build reports................................!
 		
-		Nexus Credentials-(username:admin,password:admin123)		
+		Nexus Credentials-(username:admin,password:flexib)
 		
 		SAST REPORTS
-		http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/sast-reports/report-task.txt
+		http://43.204.5.162:8081/repository/flexib3i-Pipeline-Reports/sast-reports/report-task.txt
 		https://sonarcloud.io/dashboard?id=Shoppingcart
 		--------------------------------------------------------------------------------------------------------------------------------------
 		DAST REPORTS
-		http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/DAST-REPORTS/arachni-report-html-${BUILD_NUMBER}.zip
+		http://43.204.5.162:8081/repository/flexib3i-Pipeline-Reports/DAST-REPORTS/arachni-report-html-${BUILD_NUMBER}.zip
 		----------------------------------------------------------------------------------------------------------------------------------------
 		
 		FUNCTIONAL AUTOMATION WEB REPORTS
-		http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip
+		http://43.204.5.162:8081/repository/flexib3i-Pipeline-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip
 		----------------------------------------------------------------------------------------------------------------------------------------
 		FUNCTIONAL AUTOMATION MOBILE REPORTS
-		http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip
+		http://43.204.5.162:8081/repository/flexib3i-Pipeline-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip
 		----------------------------------------------------------------------------------------------------------------------------------------		
 		
 		JMETER REPORTS
 		http://140.238.240.203:8081/repository/flexib3i-Pipeline-Reports/jmeter-test-report/jmeter/jmeter-test-report-${BUILD_NUMBER}.zip
 		
-
 		
 		
 		THE PIPELINE IS SUCCESSFULL AND THIS MAIL IS TO REQUEST FOR QA SIGNOFF AND PROCEED TO UAT 0R PROD ENV
