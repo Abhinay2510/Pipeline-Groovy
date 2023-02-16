@@ -110,7 +110,7 @@ pipeline {
 							bat """git clone ${env.FUNCTIONAL_WEB_GIT_URL}
 							cd NuReCampus
 							cd NureCampus_workingcopy
-							mvn test -DQAURL=https://erp.campuslabs.in/qa/dashboard-login -Dcucumber.features="C:/ProgramData/Jenkins/.jenkins/workspace/%JOB_NAME%/NureCampus_workingcopy/src/test/java/com/NuReCampus/Features/NuReCampus_login.feature"  
+							mvn test -DQAURL=https://erp.campuslabs.in/qa/dashboard-login -Dcucumber.features="C:/ProgramData/Jenkins/.jenkins/workspace/EnGRC/bhaskar/NureCampus_workingcopy/src/test/java/com/NuReCampus/Features/NuReCampus_login.feature"  
 							"""
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'														
