@@ -214,6 +214,7 @@ pipeline {
 		THE PIPELINE IS SUCCESSFULL AND THIS MAIL IS TO REQUEST FOR QA SIGNOFF AND PROCEED TO UAT 0R PROD ENV
 		
 		For more information please contact DEVSECOPS team...........!"""
+		cleanWs()
 
 }
 }
