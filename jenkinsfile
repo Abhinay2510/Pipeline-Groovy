@@ -74,7 +74,7 @@ pipeline {
 					script {
 						try {					
 						if (env.Deployment != 'null') {						
-            deploy adapters: [tomcat8(credentialsId: 'Tomcat', path: '', url: "${env.Deployment}")], contextPath: null, war: '**/*.war'
+            deploy adapters: [tomcat8(credentialsId: 'tom', path: '', url: "${env.Deployment}")], contextPath: null, war: '**/*.war'
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'	    
 					}	} catch (err) {
