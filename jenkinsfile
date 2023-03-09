@@ -215,7 +215,6 @@ pipeline {
 		
 		For more information please contact DEVSECOPS team...........!"""
 		cleanWs()
-
 }
 }
 }
