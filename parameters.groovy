@@ -1,8 +1,7 @@
-env.SAST_GIT_URL="https://github.com/harishpallapu/SourceCode_SAST.git"
-env.BUILD_GIT_URL="https://github.com/harishpallapu/SourceCode_SAST.git"
-env.Deployment="http://192.168.0.106:8008/"
-env.DAST_URL="http://192.168.0.106:8008/SpringMVCAnnotationShoppingCart"
-env.FUNCTIONAL_WEB_GIT_URL="https://github.com/harishpallapu/NuReCampus.git -b master"
-env.FUNCTIONAL_MOBILE_GIT_URL="https://github.com/harishpallapu/mobiletest.git"
-env.JMETER_GIT_URL="https://github.com/harishpallapu/folder.git"
-env.EMAIL_ID="nihas0505@gmail.com"
+env.SAST_GIT_URL=
+env.BUILD_GIT_URL="Branch"
+env.TOMCAT_IP="Branch"
+env.FUNCTIONAL_WEB_GIT_URL="Branch"
+env.FUNCTIONAL_MOBILE_GIT_URL=
+env.JMETER_GIT_URL="Branch"
+env.NEXUS_IP=
