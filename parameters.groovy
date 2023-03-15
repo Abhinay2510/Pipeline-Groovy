@@ -6,4 +6,4 @@ env.FUNCTIONAL_WEB_GIT_URL="https://github.com/harishpallapu/NuReCampus.git -b m
 env.FUNCTIONAL_MOBILE_GIT_URL="https://github.com/harishpallapu/mobiletest.git"
 env.JMETER_GIT_URL="https://github.com/harishpallapu/folder.git"
 env.EMAIL_ID="flexib08@gmail.com"
-env.NEXUS="http://172.20.10.3:8081/"
+
