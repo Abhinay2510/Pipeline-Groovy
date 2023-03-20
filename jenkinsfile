@@ -107,11 +107,9 @@ pipeline {
 		   			script {
 						try {
 						if (env.FUNCTIONAL_WEB_GIT_URL != 'null') {						
-							bat """git clone ${env.FUNCTIONAL_WEB_GIT_URL}
-							cd NuReCampus
-							cd NureCampus_workingcopy
-							mvn test -DQAURL=https://erp.campuslabs.in/qa/dashboard-login -Dcucumber.features="C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\${JOB_NAME}\\NuReCampus\\NureCampus_workingcopy\\src\\test\\java\\com\\NuReCampus\\Features\\NuReCampus_login.feature"
-							"""
+							bat  """ git clone ${env.FUNCTIONAL_WEB_GIT_URL}
+							cd WebAutomationProject
+							mvn test """
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'														
 					}	} catch (err) {
@@ -165,7 +163,7 @@ pipeline {
             steps {
                 
               
-	       bat 'tar -a -c -f web-test-report-%BUILD_NUMBER%.zip NuReCampus/NureCampus_workingcopy/test-output/* '
+	       bat 'tar -a -c -f web-test-report-%BUILD_NUMBER%.zip WebAutomationProject/src/test/java/com/shoppingcart/Reports/* '
 	       bat 'tar -a -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
 	       bat 'tar -a -c -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
                bat '''mkdir test-reports
