@@ -17,7 +17,7 @@ pipeline {
                 script {
                     try {
                 // Get some code from a GitHub repository
-						if (env.SAST_GIT_URL != 'null') {				
+						if (env.SAST_GIT_URL != '') {				
                 git "${env.SAST_GIT_URL}"
                 bat "git clone https://github.com/harishpallapu/sonarqube_scannar_windows.git"
                 bat "./sonarqube_scannar_windows/sonar-scanner-4.6.2.2472-windows/bin/sonar-scanner.bat"
@@ -55,7 +55,7 @@ pipeline {
             steps {
 				script {
 						try {
-						if (env.BUILD_GIT_URL != 'null') {
+						if (env.BUILD_GIT_URL != '') {
                 git "${env.BUILD_GIT_URL}"
 							bat 'mvn clean package'
 					        } else {
@@ -73,7 +73,7 @@ pipeline {
          steps {
 					script {
 						try {					
-						if (env.Deployment != 'null') {						
+						if (env.Deployment != '') {						
             deploy adapters: [tomcat8(credentialsId: 'tom', path: '', url: "${env.Deployment}")], contextPath: null, war: '**/*.war'
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'	    
@@ -89,7 +89,7 @@ pipeline {
             steps {
                 script {
                     try {
-						if (env.DAST_IP != 'null') {		    
+						if (env.DAST_IP != '') {		    
                        arachniScanner checks: '*', format: 'html', url: "${env.DAST_URL}"
 					        } else {
                                                        echo 'skipping the stage ${env.STAGE_NAME}.............................!'                           
@@ -106,7 +106,7 @@ pipeline {
            			steps {
 		   			script {
 						try {
-						if (env.FUNCTIONAL_WEB_GIT_URL != 'null') {						
+						if (env.FUNCTIONAL_WEB_GIT_URL != '') {						
 							bat  """ git clone ${env.FUNCTIONAL_WEB_GIT_URL}
 							cd WebAutomationProject
 							mvn test """
@@ -124,7 +124,7 @@ pipeline {
             				steps {
 		   			script {
 						try {
-						if (env.FUNCTIONAL_MOBILE_GIT_URL != 'null') {						
+						if (env.FUNCTIONAL_MOBILE_GIT_URL != '') {						
 							bat """ git clone ${env.FUNCTIONAL_MOBILE_GIT_URL}
 							cd mobiletest
 							mvn test """
@@ -142,7 +142,7 @@ pipeline {
             			steps {
 		   			script {
 						try {
-						if (env.JMETER_GIT_URL != 'null') {						
+						if (env.JMETER_GIT_URL != '') {						
 							bat """
                             git clone ${env.JMETER_GIT_URL}
 			    dir
