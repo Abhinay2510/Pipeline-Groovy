@@ -108,7 +108,7 @@ pipeline {
 						try {
 						if (env.FUNCTIONAL_WEB_GIT_URL != '') {						
 							bat  """ git clone ${env.FUNCTIONAL_WEB_GIT_URL}
-							cd WebAutomationProject
+							cd web_auto/WebAutomationProject
 							mvn test """
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'														
