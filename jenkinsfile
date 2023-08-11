@@ -109,7 +109,7 @@ pipeline {
 						if (env.FUNCTIONAL_WEB_GIT_URL != '') {						
 							bat  """ git clone ${env.FUNCTIONAL_WEB_GIT_URL}
 							cd web_auto/WebAutomationProject
-							mvn test """
+							mvn test -Dtest=com.falcon.TestCases.FalconRunnabletest """
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'														
 					}	} catch (err) {
@@ -163,7 +163,7 @@ pipeline {
             steps {
                 
               
-	       bat 'tar -a -c -f web-test-report-%BUILD_NUMBER%.zip web_auto/WebAutomationProject/src/test/java/com/shoppingcart/Reports/* '
+	       bat 'tar -a -c -f web-test-report-%BUILD_NUMBER%.zip web_auto/3i-Bank_FalconFramework/Report/* '
 	       bat 'tar -a -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
 	       bat 'tar -a -c -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
                bat '''mkdir test-reports
