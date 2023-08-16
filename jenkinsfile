@@ -38,7 +38,7 @@ pipeline {
 			      script {
 						try {
 							bat '''
-							wget https://github.com/jeremylong/DependencyCheck/releases/download/v6.2.2/dependency-check-6.2.2-release.zip
+							git clone https://github.com/jeremylong/DependencyCheck/releases/download/v6.2.2/dependency-check-6.2.2-release.zip
 							 PowerShell Expand-Archive -Path "dependency-check-6.2.2-release.zip"  
 							./dependency-check-6.2.2-release/dependency-check/bin/dependency-check.bat --noupdate --project "TeachersFCU" --scan "Shoppingcart/lib/" --format HTML --out .
 						    '''
