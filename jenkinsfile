@@ -41,8 +41,8 @@ pipeline {
                 bat 'curl -o dependency-check-6.2.2-release.zip https://github.com/jeremylong/DependencyCheck/releases/download/v6.2.2/dependency-check-6.2.2-release.zip'
                 
                 // Extract the downloaded zip using PowerShell
-               //  bat "PowerShell Expand-Archive -Path \"${WORKSPACE}\\dependency-check-6.2.2-release.zip\" -DestinationPath \"${WORKSPACE}\""
-		 bat "expand -F:* \"${WORKSPACE}\\dependency-check-6.2.2-release.zip\" \"${WORKSPACE}\""
+                 bat "PowerShell Expand-Archive -Path \"${WORKSPACE}\\dependency-check-6.2.2-release.zip\" -DestinationPath \"${WORKSPACE}\""
+		// bat "PowerShell Expand-Archive -Path \"${WORKSPACE}\\dependency-check-6.2.2-release.zip\" \"${WORKSPACE}\""
 
                 // Run DependencyCheck
                 bat "\"${WORKSPACE}\\dependency-check-6.2.2-release\\dependency-check\\bin\\dependency-check.bat\" --noupdate --project \"TeachersFCU\" --scan \"Shoppingcart/lib/\" --format HTML --out \"${WORKSPACE}\""
