@@ -171,7 +171,8 @@ pipeline {
 	       bat 'tar -a -c -f web-test-report-%BUILD_NUMBER%.zip web_auto/3i-Bank_FalconFramework/Report/* '
 		// bat "tar -a -c -f \"${WORKSPACE}\\web-test-report-12.zip\" \"${WORKSPACE}\\web_auto\\3i-Bank_FalconFramework\\Report\\*\""
 	       bat 'tar -a -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
-	       bat 'tar -a -c -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
+	      // bat 'tar -a -c -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
+		bat "tar -a -c -f \"${WORKSPACE}\\jmeter-test-report-%BUILD_NUMBER%.zip\" \"${WORKSPACE}\\folder\\OnlineShop_%BUILD_NUMBER%.html\\*\""
                bat '''mkdir test-reports
                
                cd test-reports	       
