@@ -206,8 +206,10 @@ pipeline {
     success {
         script {
             // Upload reports to Nexus here
-            bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
-            // ...
+           // bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
+            bat "curl -v -u admin:admin --upload-file \"${WORKSPACE}\\sast-report-${BUILD_NUMBER}.zip\" \"http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip\""
+
+		// ...
         }
     }
     failure {
