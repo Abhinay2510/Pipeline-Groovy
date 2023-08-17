@@ -198,53 +198,48 @@ pipeline {
 			    }	   
 		}    
 	}
-	     post {
-            success {
-                script {
-                    // Upload reports to Nexus here
-                    bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
-                    // ...
-                }
-            }
-            failure {
-                echo "One or more stages failed. Skipping report upload to Nexus."
-            }
+	 post {
+    success {
+        script {
+            // Upload reports to Nexus here
+            bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
+            // ...
         }
-	post{
-	always {
-		// Clean after build
-	mail to: "${env.EMAIL_ID}",
+    }
+    failure {
+        echo "One or more stages failed. Skipping report upload to Nexus."
+    }
+    always {
+        // Clean after build
+        mail to: "${env.EMAIL_ID}",
         subject: "Status of pipeline: ${currentBuild.fullDisplayName}",
         body: """Result is ${currentBuild.result}
         
-		Please find build reports................................!
-		
-		Nexus Credentials-(username:admin,password:admin)
-		
-		SAST REPORTS
-		http://192.168.1.6:8081/repository/Flexib-Reports/sast-reports/report-task.txt
-		https://sonarcloud.io/dashboard?id=Shoppingcart
-		--------------------------------------------------------------------------------------------------------------------------------------
-		DAST REPORTS
-		http://192.168.1.6:8081/repository/Flexib-Reports/DAST-REPORTS/arachni-report-html-${BUILD_NUMBER}.zip
-		----------------------------------------------------------------------------------------------------------------------------------------
-		
-		FUNCTIONAL AUTOMATION WEB REPORTS
-		http://192.168.1.6:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip
-		----------------------------------------------------------------------------------------------------------------------------------------
-		FUNCTIONAL AUTOMATION MOBILE REPORTS
-		http://192.168.1.6:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip
-		----------------------------------------------------------------------------------------------------------------------------------------		
-		
-		JMETER REPORTS
-		http://192.168.1.6:8081/repository/Flexib-Reports/jmeter-test-report/jmeter/jmeter-test-report-${BUILD_NUMBER}.zip
-		
-		
-		
-		THE PIPELINE IS SUCCESSFULL AND THIS MAIL IS TO REQUEST FOR QA SIGNOFF AND PROCEED TO UAT 0R PROD ENV
-		
-		For more information please contact DEVSECOPS team...........!"""
-
-   		} 
- 	}
+        Please find build reports................................!
+        
+        Nexus Credentials-(username:admin,password:admin)
+        
+        SAST REPORTS
+        http://192.168.1.6:8081/repository/Flexib-Reports/sast-reports/report-task.txt
+        https://sonarcloud.io/dashboard?id=Shoppingcart
+        --------------------------------------------------------------------------------------------------------------------------------------
+        DAST REPORTS
+        http://192.168.1.6:8081/repository/Flexib-Reports/DAST-REPORTS/arachni-report-html-${BUILD_NUMBER}.zip
+        ----------------------------------------------------------------------------------------------------------------------------------------
+        
+        FUNCTIONAL AUTOMATION WEB REPORTS
+        http://192.168.1.6:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip
+        ----------------------------------------------------------------------------------------------------------------------------------------
+        FUNCTIONAL AUTOMATION MOBILE REPORTS
+        http://192.168.1.6:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip
+        ----------------------------------------------------------------------------------------------------------------------------------------
+        
+        JMETER REPORTS
+        http://192.168.1.6:8081/repository/Flexib-Reports/jmeter-test-report/jmeter/jmeter-test-report-${BUILD_NUMBER}.zip
+        
+        THE PIPELINE IS SUCCESSFUL AND THIS MAIL IS TO REQUEST FOR QA SIGNOFF AND PROCEED TO UAT OR PROD ENV
+        
+        For more information, please contact the DEVSECOPS team...........!"""
+    }
+}
 }
