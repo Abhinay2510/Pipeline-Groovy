@@ -198,7 +198,7 @@ pipeline {
 			    }	   
 		}    
 	}
-	  post {
+	     post {
             success {
                 script {
                     // Upload reports to Nexus here
@@ -210,7 +210,8 @@ pipeline {
                 echo "One or more stages failed. Skipping report upload to Nexus."
             }
         }
-always {
+	post{
+	always {
 		// Clean after build
 	mail to: "${env.EMAIL_ID}",
         subject: "Status of pipeline: ${currentBuild.fullDisplayName}",
@@ -244,5 +245,6 @@ always {
 		
 		For more information please contact DEVSECOPS team...........!"""
 
-}
+   		} 
+ 	}
 }
