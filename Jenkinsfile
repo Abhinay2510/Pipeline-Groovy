@@ -40,6 +40,12 @@ pipeline {
                             bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip"'
                         }
                     }
+		failure {
+                        script {
+                            echo "SCA failed. Skipping report upload to Nexus."
+                            // Handle failure if needed
+                        }
+                    }
                 }	
 	}
 	    
@@ -66,7 +72,7 @@ pipeline {
 		
      	   }
    	 }
-	       
+       }       
 	    
 	stage('build') {
             steps {
