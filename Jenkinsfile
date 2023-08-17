@@ -165,6 +165,12 @@ pipeline {
 			}
 		} 			
   	  	   stage('Nexus') {
+					   {
+        		    when {
+            			    expression {
+            			        currentBuild.resultIsBetterOrEqualTo('SUCCESS')
+          				      }
+        			    }
 			    steps {
 				    script {
        				     if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')){
@@ -180,13 +186,11 @@ pipeline {
 			        """
 			     // Steps to create and upload reports
  		   }
-			   else {
-                echo "Build result is not SUCCESS. Skipping report upload to Nexus."
-			   }
+			   
 		}
 	}
 	 }
-    }		
+    	
  post {
         // Clean after build
         always {
@@ -196,7 +200,7 @@ pipeline {
         
 		Please find build reports................................!
 		
-		Nexus Credentials-(username:admin,password:flexib)
+		Nexus Credentials-(username:admin,password:admin)
 		
 		SAST REPORTS
 		http://10.1.127.197:8081/repository/Flexib-Reports/sast-reports/report-task.txt
