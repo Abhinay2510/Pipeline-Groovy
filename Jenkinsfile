@@ -33,7 +33,14 @@ pipeline {
                 //sh "mvn -Dmaven.test.failure.ignore=true clean package"
             }
         } 
-		
+	post {
+                    success {
+                        script {
+                            echo "SAST succeeded, uploading reports to Nexus."
+                            bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip"'
+                        }
+                    }
+                }	
 	}
 	    
        stage('SCA') {
@@ -56,19 +63,10 @@ pipeline {
                 unstable(message: "${STAGE_NAME} is unstable")
                 echo "Error detected, ${env.STAGE_NAME} failed..................!"
     	        }
+		
      	   }
    	 }
-	       post {
-                success {
-                    // Steps to create and upload reports
-                    echo "SCA succeeded, uploading reports to Nexus."
-                    // ...
-                }
-                failure {
-                    echo "SCA failed. Skipping report upload to Nexus."
-                }
-            }
-	}
+	       
 	    
 	stage('build') {
             steps {
