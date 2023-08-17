@@ -200,7 +200,7 @@ pipeline {
 				// bat 'jar -c -M -f jmeter-test-report-%BUILD_NUMBER%.zip -C folder OnlineShop_%BUILD_NUMBER%.html'
         
  		   }
-			   
+			    }	   
 		}
 	}
 	 post {
