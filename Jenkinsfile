@@ -37,8 +37,10 @@ pipeline {
     success {
         script {
             // Upload reports to Nexus here
-            bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
-            // ...
+           // bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
+           curl -v -u admin:admin --upload-file "C:\ProgramData\Jenkins\.jenkins\workspace\3ibank\flexib@2\sast-report-57.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-57.zip"
+
+		// ...
         }
     }
     failure {
