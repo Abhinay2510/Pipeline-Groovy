@@ -165,7 +165,7 @@ pipeline {
 			}
 		} 			
   	  	   stage('Nexus') {
-					   {
+					 
         		    when {
             			    expression {
             			        currentBuild.resultIsBetterOrEqualTo('SUCCESS')
