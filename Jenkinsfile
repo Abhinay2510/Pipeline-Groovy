@@ -35,8 +35,10 @@ pipeline {
         } 
 		post {
                 success {
+			script{
                     // Steps to create and upload reports
                     echo "SAST Analysis succeeded, uploading reports to Nexus."
+		curl -v -u admin:admin --upload-file "sast-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip"
                     // ...
                 }
                 failure {
@@ -67,6 +69,16 @@ pipeline {
     	        }
      	   }
    	 }
+	       post {
+                success {
+                    // Steps to create and upload reports
+                    echo "SCA succeeded, uploading reports to Nexus."
+                    // ...
+                }
+                failure {
+                    echo "SCA failed. Skipping report upload to Nexus."
+                }
+            }
 	}
 	    
 	stage('build') {
@@ -181,7 +193,7 @@ pipeline {
 					 
 			    steps {
 				    script {
-       				     if (currentstage.resultIsBetterOrEqualTo('SUCCESS')){
+       			
 			        bat 'tar -c -f web-test-report-%BUILD_NUMBER%.zip web_auto/3i-Bank_FalconFramework/Report/* '
 			        bat 'tar -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
 			      // bat 'jar -c -M -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
