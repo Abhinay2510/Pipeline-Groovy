@@ -196,8 +196,9 @@ pipeline {
         
  		   }
 			    }	   
-		}
- post {
+		}    
+	}
+	  post {
             success {
                 script {
                     // Upload reports to Nexus here
@@ -209,10 +210,6 @@ pipeline {
                 echo "One or more stages failed. Skipping report upload to Nexus."
             }
         }
- 	
-	    
-	}
-	 
         always {
 		// Clean after build
 	mail to: "${env.EMAIL_ID}",
