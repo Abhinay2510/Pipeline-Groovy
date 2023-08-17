@@ -17,13 +17,18 @@ pipeline {
                 script {
                     try {
                 // Get some code from a GitHub repository
+			     if (currentBuild.resultIsBetterOrEqualTo('SUCCESS'))
 						if (env.SAST_GIT_URL != '') {				
                 git "${env.SAST_GIT_URL}"
                 bat "git clone https://github.com/harishpallapu/sonarqube_scannar_windows.git"
                 bat "./sonarqube_scannar_windows/sonar-scanner-4.6.2.2472-windows/bin/sonar-scanner.bat"
 					        } else {
                                                         echo "skipping the stage ${env.STAGE_NAME}.............................!"				
-                   } } catch (err) {
+                   } } 
+			else {
+                            echo "Build result is not SUCCESS. Skipping report upload to Nexus."
+                        }
+			catch (err) {
 							echo err.getMessage()
 							unstable(message: "${STAGE_NAME} is unstable")
 							echo "Error detected, ${env.STAGE_NAME} failed...............!"
@@ -37,6 +42,7 @@ pipeline {
     steps {
         script {
             try {
+		if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')) {    
                 // Download the DependencyCheck release zip using curl
                 bat 'curl -o dependency-check-6.1.5-release.zip https://github.com/jeremylong/DependencyCheck/releases/download/v6.1.5/dependency-check-6.1.5-release.zip'
                 
@@ -47,7 +53,11 @@ pipeline {
                 // Run DependencyCheck
                 bat "\"${WORKSPACE}\\dependency-check-6.1.5-release\\dependency-check\\bin\\dependency-check.bat\" --noupdate --project \"TeachersFCU\" --scan \"Shoppingcart/lib/\" --format HTML --out \"${WORKSPACE}\""
 
-       		     } catch (err) {
+       		     } 
+		else {
+                            echo "Build result is not SUCCESS. Skipping report upload to Nexus."
+                        }
+		catch (err) {
                 echo err.getMessage()
                 unstable(message: "${STAGE_NAME} is unstable")
                 echo "Error detected, ${env.STAGE_NAME} failed..................!"
@@ -55,7 +65,7 @@ pipeline {
      	   }
    	 }
 	}
-
+       }
 	stage('build') {
             steps {
 				script {
@@ -166,14 +176,9 @@ pipeline {
 		} 			
   	  	   stage('Nexus') {
 					 
-        		    when {
-            			    expression {
-            			        currentBuild.resultIsBetterOrEqualTo('SUCCESS')
-          				      }
-        			    }
 			    steps {
 				    script {
-       				     if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')){
+       				     if (currentstage.resultIsBetterOrEqualTo('SUCCESS')){
 			        bat 'tar -c -f web-test-report-%BUILD_NUMBER%.zip web_auto/3i-Bank_FalconFramework/Report/* '
 			        bat 'tar -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
 			      // bat 'jar -c -M -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
