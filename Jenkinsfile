@@ -210,7 +210,7 @@ pipeline {
                 echo "One or more stages failed. Skipping report upload to Nexus."
             }
         }
-        always {
+always {
 		// Clean after build
 	mail to: "${env.EMAIL_ID}",
         subject: "Status of pipeline: ${currentBuild.fullDisplayName}",
