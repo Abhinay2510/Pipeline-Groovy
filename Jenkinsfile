@@ -178,6 +178,7 @@ pipeline {
 	   			curl -v -u admin:admin --upload-file "mobile-test-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip"
        				curl -v -u admin:admin --upload-file "sast-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip"
 			        """
+			     // Steps to create and upload reports
  		   }
 			   else {
                 echo "Build result is not SUCCESS. Skipping report upload to Nexus."
@@ -186,7 +187,7 @@ pipeline {
 	}
 
     }		
- 	post {
+ post {
         // Clean after build
         always {
 	mail to: "${env.EMAIL_ID}",
@@ -224,4 +225,4 @@ pipeline {
 }
 }
 }
-}
+
