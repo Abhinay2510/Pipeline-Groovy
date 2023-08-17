@@ -166,6 +166,8 @@ pipeline {
 		} 			
   	  	   stage('Nexus') {
 			    steps {
+				    script {
+       				     if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')){
 			        bat 'tar -c -f web-test-report-%BUILD_NUMBER%.zip web_auto/3i-Bank_FalconFramework/Report/* '
 			        bat 'tar -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
 			      // bat 'jar -c -M -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
@@ -176,8 +178,11 @@ pipeline {
 	   			curl -v -u admin:admin --upload-file "mobile-test-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip"
 			        """
  		   }
+			   else {
+                echo "Build result is not SUCCESS. Skipping report upload to Nexus."
+			   }
 		}
-
+	}
 
     }		
  	post {
