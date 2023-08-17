@@ -33,7 +33,18 @@ pipeline {
                 //sh "mvn -Dmaven.test.failure.ignore=true clean package"
             }
         } 
+		post {
+                success {
+                    // Steps to create and upload reports
+                    echo "SAST Analysis succeeded, uploading reports to Nexus."
+                    // ...
+                }
+                failure {
+                    echo "SAST Analysis failed. Skipping report upload to Nexus."
+                }
+            }
         }
+	    
        stage('SCA') {
     steps {
         script {
