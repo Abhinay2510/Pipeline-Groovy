@@ -164,18 +164,18 @@ pipeline {
 					}
 			}
 		} 			
-  	      stage('Nexus') {
-    			steps {
-      				  bat 'tar -c -f web-test-report-%BUILD_NUMBER%.zip web_auto/3i-Bank_FalconFramework/Report/* '
-   				     bat 'tar -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
- 				       bat 'tar -c -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
+  	  	   stage('Nexus') {
+			    steps {
+			        bat 'tar -c -f web-test-report-%BUILD_NUMBER%.zip web_auto/3i-Bank_FalconFramework/Report/* '
+			        bat 'tar -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
+			        bat 'tar -c -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
         
-     		   def buildNumber = env.BUILD_NUMBER
-      			  bat """
-     			   curl -T "web-test-report-${buildNumber}.zip" -u admin:flexib -v "http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${buildNumber}.zip"
-     			   """
-    }
-}
+			        bat """
+			        curl -T \"web-test-report-${env.BUILD_NUMBER}.zip\" -u admin:flexib -v \"http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${env.BUILD_NUMBER}.zip\"
+			        """
+ 		   }
+		}
+
 
     }		
  	post {
