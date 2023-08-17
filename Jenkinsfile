@@ -24,8 +24,7 @@ pipeline {
                 bat "./sonarqube_scannar_windows/sonar-scanner-4.6.2.2472-windows/bin/sonar-scanner.bat"
 					        } else {
                                                         echo "skipping the stage ${env.STAGE_NAME}.............................!"				
-                   } } 
-			else {
+                   } } else {
                             echo "Build result is not SUCCESS. Skipping report upload to Nexus."
                         }
 			catch (err) {
