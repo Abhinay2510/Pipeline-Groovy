@@ -181,11 +181,12 @@ pipeline {
               // curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\mobile-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://10.1.127.197:8081/#browse/browse:Flexib-Reports:mobile-test-report      
               // curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\jmeter-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://10.1.127.197:8081/#browse/browse:Flexib-Reports:jmeter
                '''
-	       bat '''
-		curl -T "web-test-report-%%%BUILD_NUMBER%%%.zip" -u admin:flexib -v http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-%%%BUILD_NUMBER%%%.zip
-		curl -T "mobile-test-report-%%%BUILD_NUMBER%%%.zip" -u admin:flexib -v http://10.1.127.197:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-%%%BUILD_NUMBER%%%.zip
-		curl -T "jmeter-test-report-%%%BUILD_NUMBER%%%.zip" -u admin:flexib -v http://10.1.127.197:8081/repository/Flexib-Reports/jmeter-test-report/jmeter-test-report-%%%BUILD_NUMBER%%%.zip
-		'''
+	     
+  		def buildNumber = env.BUILD_NUMBER
+		bat """
+		curl -T \"web-test-report-${buildNumber}.zip\" -u admin:flexib -v \"http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${buildNumber}.zip\"
+		"""
+
 
                            }
         }              
