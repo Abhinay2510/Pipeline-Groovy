@@ -171,7 +171,7 @@ pipeline {
 			        bat 'tar -c -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
         
 			        bat """
-			        curl -v -u admin:flexib --upload-file "web-test-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip"
+			        curl -v -u admin:admin --upload-file "web-test-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip"
 			        """
  		   }
 		}
