@@ -177,11 +177,11 @@ pipeline {
                bat '''
 		mkdir test-reports
                cd test-reports	       
-               curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\Shoppingcart\\.scannerwork\\report-task.txt" -u admin:flexib -v http://10.1.127.121:8081/#browse/browse:Flexib-Reports:sast-reports
-	       curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\arachni-report-html.zip" -u admin:flexib -v http://10.1.127.121:8081/#browse/browse:Flexib-Reports:DAST-REPORTS
-               curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\web-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://10.1.127.121:8081/#browse/browse:Flexib-Reports:web-test-report 
-               curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\mobile-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://10.1.127.121:8081/#browse/browse:Flexib-Reports:mobile-test-report      
-               curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\jmeter-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://10.1.127.121:8081/#browse/browse:Flexib-Reports:jmeter
+               curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\Shoppingcart\\.scannerwork\\report-task.txt" -u admin:flexib -v http://10.1.127.197:8081/#browse/browse:Flexib-Reports:sast-reports
+	       curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\arachni-report-html.zip" -u admin:flexib -v http://10.1.127.197:8081/#browse/browse:Flexib-Reports:DAST-REPORTS
+               curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\web-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://10.1.127.197:8081/#browse/browse:Flexib-Reports:web-test-report 
+               curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\mobile-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://10.1.127.197:8081/#browse/browse:Flexib-Reports:mobile-test-report      
+               curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\jmeter-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://10.1.127.197:8081/#browse/browse:Flexib-Reports:jmeter
                '''
                            }
         }              
@@ -198,22 +198,22 @@ pipeline {
 		Nexus Credentials-(username:admin,password:flexib)
 		
 		SAST REPORTS
-		http://10.1.127.121:8081/repository/Flexib-Reports/sast-reports/report-task.txt
+		http://10.1.127.197:8081/repository/Flexib-Reports/sast-reports/report-task.txt
 		https://sonarcloud.io/dashboard?id=Shoppingcart
 		--------------------------------------------------------------------------------------------------------------------------------------
 		DAST REPORTS
-		http://10.1.127.121:8081/repository/Flexib-Reports/DAST-REPORTS/arachni-report-html-${BUILD_NUMBER}.zip
+		http://10.1.127.197:8081/repository/Flexib-Reports/DAST-REPORTS/arachni-report-html-${BUILD_NUMBER}.zip
 		----------------------------------------------------------------------------------------------------------------------------------------
 		
 		FUNCTIONAL AUTOMATION WEB REPORTS
-		http://10.1.127.121:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip
+		http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip
 		----------------------------------------------------------------------------------------------------------------------------------------
 		FUNCTIONAL AUTOMATION MOBILE REPORTS
-		http://10.1.127.121:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip
+		http://10.1.127.197:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip
 		----------------------------------------------------------------------------------------------------------------------------------------		
 		
 		JMETER REPORTS
-		http://10.1.127.121:8081/repository/Flexib-Reports/jmeter-test-report/jmeter/jmeter-test-report-${BUILD_NUMBER}.zip
+		http://10.1.127.197:8081/repository/Flexib-Reports/jmeter-test-report/jmeter/jmeter-test-report-${BUILD_NUMBER}.zip
 		
 		
 		
