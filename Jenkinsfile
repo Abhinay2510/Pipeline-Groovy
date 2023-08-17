@@ -34,18 +34,18 @@ pipeline {
             }
         } 
 		post {
-                success {
-			script{
-                    // Steps to create and upload reports
-                    echo "SAST Analysis succeeded, uploading reports to Nexus."
-		curl -v -u admin:admin --upload-file 'sast-report-${BUILD_NUMBER}.zip' 'http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip'
-                    // ...
-                }
-                failure {
-                    echo "SAST Analysis failed. Skipping report upload to Nexus."
-                }
-            }
+    success {
+        script {
+            // Upload reports to Nexus here
+            bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
+            // ...
         }
+    }
+    failure {
+        echo "One or more stages failed. Skipping report upload to Nexus."
+    }
+}
+	}
 	    
        stage('SCA') {
     steps {
