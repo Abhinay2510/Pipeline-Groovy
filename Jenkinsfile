@@ -164,32 +164,19 @@ pipeline {
 					}
 			}
 		} 			
-        stage('Nexus') {
-            steps {
-                
-              
-	       bat 'tar -c -f web-test-report-%BUILD_NUMBER%.zip web_auto/3i-Bank_FalconFramework/Report/* '
-		// bat "tar -a -c -f \"${WORKSPACE}\\web-test-report-12.zip\" \"${WORKSPACE}\\web_auto\\3i-Bank_FalconFramework\\Report\\*\""
-	       bat 'tar -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
-	       bat 'tar -c -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
+  	      stage('Nexus') {
+    			steps {
+      				  bat 'tar -c -f web-test-report-%BUILD_NUMBER%.zip web_auto/3i-Bank_FalconFramework/Report/* '
+   				     bat 'tar -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
+ 				       bat 'tar -c -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
+        
+     		   def buildNumber = env.BUILD_NUMBER
+      			  bat """
+     			   curl -T "web-test-report-${buildNumber}.zip" -u admin:flexib -v "http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${buildNumber}.zip"
+     			   """
+    }
+}
 
-
-             //  bat '''       
-              // curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\Shoppingcart\\.scannerwork\\report-task.txt" -u admin:flexib -v http://10.1.127.197:8081/#browse/browse:Flexib-Reports:sast-reports
-	      // curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\arachni-report-html.zip" -u admin:flexib -v http://10.1.127.197:8081/#browse/browse:Flexib-Reports:DAST-REPORTS
-              // curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\web-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://10.1.127.197:8081/#browse/browse:Flexib-Reports:web-test-report 
-              // curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\mobile-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://10.1.127.197:8081/#browse/browse:Flexib-Reports:mobile-test-report      
-              // curl -T "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\jmeter-test-report-%BUILD_NUMBER%.zip" -u admin:flexib -v http://10.1.127.197:8081/#browse/browse:Flexib-Reports:jmeter
-               '''
-	     
-  		def buildNumber = env.BUILD_NUMBER
-		bat """
-		curl -T \"web-test-report-${buildNumber}.zip\" -u admin:flexib -v \"http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${buildNumber}.zip\"
-		"""
-
-
-                           }
-        }              
     }		
  	post {
         // Clean after build
