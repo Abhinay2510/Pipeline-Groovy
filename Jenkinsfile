@@ -17,16 +17,13 @@ pipeline {
                 script {
                     try {
                 // Get some code from a GitHub repository
-			     if (currentBuild.resultIsBetterOrEqualTo('SUCCESS'))
 						if (env.SAST_GIT_URL != '') {				
                 git "${env.SAST_GIT_URL}"
                 bat "git clone https://github.com/harishpallapu/sonarqube_scannar_windows.git"
                 bat "./sonarqube_scannar_windows/sonar-scanner-4.6.2.2472-windows/bin/sonar-scanner.bat"
 					        } else {
                                                         echo "skipping the stage ${env.STAGE_NAME}.............................!"				
-                   } } else {
-                            echo "Build result is not SUCCESS. Skipping report upload to Nexus."
-                        }
+                   } } 
 			catch (err) {
 							echo err.getMessage()
 							unstable(message: "${STAGE_NAME} is unstable")
