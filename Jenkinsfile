@@ -33,21 +33,7 @@ pipeline {
                 //sh "mvn -Dmaven.test.failure.ignore=true clean package"
             }
         } 
-		post {
-    success {
-        script {
-            // Upload reports to Nexus here
-           // bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
-          bat 'curl -v -u admin:admin --upload-file "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\3ibank\\flexib@2\\sast-report-%BUILD_NUMBER%.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
-
-
-		// ...
-        }
-    }
-    failure {
-        echo "One or more stages failed. Skipping report upload to Nexus."
-    }
-}
+		
 	}
 	    
        stage('SCA') {
@@ -201,23 +187,32 @@ pipeline {
 			        bat 'tar -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
 			      // bat 'jar -c -M -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
 				// bat 'jar -c -M -f jmeter-test-report-%BUILD_NUMBER%.zip -C folder OnlineShop_%BUILD_NUMBER%.html'
+
+			 bat """
+                    curl -v -u admin:admin --upload-file "web-test-report-${BUILD_NUMBER}.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip"
+                    curl -v -u admin:admin --upload-file "mobile-test-report-${BUILD_NUMBER}.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip"
+                    curl -v -u admin:admin --upload-file "sast-report-${BUILD_NUMBER}.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip"
+                    """
         
  		   }
 			    }	   
 		}
-	}
-	 post {
-        success {
-            script {
-                // Upload reports to Nexus here
-                bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
-                // ...
+ post {
+            success {
+                script {
+                    // Upload reports to Nexus here
+                    bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
+                    // ...
+                }
+            }
+            failure {
+                echo "One or more stages failed. Skipping report upload to Nexus."
             }
         }
-        failure {
-            echo "One or more stages failed. Skipping report upload to Nexus."
-        } 
-    	
+ 	
+	    
+	}
+	 
         always {
 		// Clean after build
 	mail to: "${env.EMAIL_ID}",
