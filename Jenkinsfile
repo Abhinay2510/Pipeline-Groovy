@@ -207,7 +207,7 @@ pipeline {
         success {
             script {
                 // Upload reports to Nexus here
-                bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
+                bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
                 // ...
             }
         }
@@ -226,22 +226,22 @@ pipeline {
 		Nexus Credentials-(username:admin,password:admin)
 		
 		SAST REPORTS
-		http://10.1.127.197:8081/repository/Flexib-Reports/sast-reports/report-task.txt
+		http://192.168.1.6:8081/repository/Flexib-Reports/sast-reports/report-task.txt
 		https://sonarcloud.io/dashboard?id=Shoppingcart
 		--------------------------------------------------------------------------------------------------------------------------------------
 		DAST REPORTS
-		http://10.1.127.197:8081/repository/Flexib-Reports/DAST-REPORTS/arachni-report-html-${BUILD_NUMBER}.zip
+		http://192.168.1.6:8081/repository/Flexib-Reports/DAST-REPORTS/arachni-report-html-${BUILD_NUMBER}.zip
 		----------------------------------------------------------------------------------------------------------------------------------------
 		
 		FUNCTIONAL AUTOMATION WEB REPORTS
-		http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip
+		http://192.168.1.6:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip
 		----------------------------------------------------------------------------------------------------------------------------------------
 		FUNCTIONAL AUTOMATION MOBILE REPORTS
-		http://10.1.127.197:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip
+		http://192.168.1.6:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip
 		----------------------------------------------------------------------------------------------------------------------------------------		
 		
 		JMETER REPORTS
-		http://10.1.127.197:8081/repository/Flexib-Reports/jmeter-test-report/jmeter/jmeter-test-report-${BUILD_NUMBER}.zip
+		http://192.168.1.6:8081/repository/Flexib-Reports/jmeter-test-report/jmeter/jmeter-test-report-${BUILD_NUMBER}.zip
 		
 		
 		
