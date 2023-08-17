@@ -38,7 +38,7 @@ pipeline {
 			script{
                     // Steps to create and upload reports
                     echo "SAST Analysis succeeded, uploading reports to Nexus."
-		curl -v -u admin:admin --upload-file "sast-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip"
+		curl -v -u admin:admin --upload-file 'sast-report-${BUILD_NUMBER}.zip' 'http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip'
                     // ...
                 }
                 failure {
