@@ -168,7 +168,7 @@ pipeline {
 			    steps {
 			        bat 'tar -c -f web-test-report-%BUILD_NUMBER%.zip web_auto/3i-Bank_FalconFramework/Report/* '
 			        bat 'tar -c -f mobile-test-report-%BUILD_NUMBER%.zip mobiletest/target/surefire-reports/*'
-			        bat 'tar -c -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
+			        jar -c -M -f jmeter-test-report-%BUILD_NUMBER%.zip folder/OnlineShop_%BUILD_NUMBER%.html/*'
         
 			        bat """
 			        curl -v -u admin:admin --upload-file "web-test-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip"
