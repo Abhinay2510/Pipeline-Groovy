@@ -34,19 +34,27 @@ pipeline {
             }
         } 
 	post {
-                    success {
-                        script {
-                            echo "SAST succeeded, uploading reports to Nexus."
-                            bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip"'
-                        }
-                    }
-		failure {
-                        script {
-                            echo "SCA failed. Skipping report upload to Nexus."
-                            // Handle failure if needed
-                        }
-                    }
-                }	
+    success {
+        script {
+            def buildNumber = env.BUILD_NUMBER
+            def url = "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-${buildNumber}.zip"
+
+            try {
+                bat 'curl -v -u admin:admin --upload-file "sast-report-' + buildNumber + '.zip" "' + url + '"'
+            } catch (Exception e) {
+                echo "Error uploading report: ${e.message}"
+                // Handle the error if needed
+            }
+        }
+    }
+    failure {
+        script {
+            echo "SAST failed. Skipping report upload to Nexus."
+            // Handle failure if needed
+        }
+    }
+}
+
 	}
 	    
        stage('SCA') {
@@ -193,9 +201,9 @@ pipeline {
 				// bat 'jar -c -M -f jmeter-test-report-%BUILD_NUMBER%.zip -C folder OnlineShop_%BUILD_NUMBER%.html'
 
 			 bat """
-                    curl -v -u admin:admin --upload-file "web-test-report-${BUILD_NUMBER}.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip"
-                    curl -v -u admin:admin --upload-file "mobile-test-report-${BUILD_NUMBER}.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip"
-                    curl -v -u admin:admin --upload-file "sast-report-${BUILD_NUMBER}.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip"
+                    curl -v -u admin:admin --upload-file "web-test-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip"
+                    curl -v -u admin:admin --upload-file "mobile-test-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip"
+                    curl -v -u admin:admin --upload-file "sast-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip"
                     """
         
  		   }
@@ -206,8 +214,8 @@ pipeline {
     success {
         script {
             // Upload reports to Nexus here
-           // bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
-            bat "curl -v -u admin:admin --upload-file \"${WORKSPACE}\\sast-report-${BUILD_NUMBER}.zip\" \"http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip\""
+           // bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
+            bat "curl -v -u admin:admin --upload-file \"${WORKSPACE}\\sast-report-${BUILD_NUMBER}.zip\" \"http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip\""
 
 		// ...
         }
@@ -226,22 +234,22 @@ pipeline {
         Nexus Credentials-(username:admin,password:admin)
         
         SAST REPORTS
-        http://192.168.1.6:8081/repository/Flexib-Reports/sast-reports/report-task.txt
+        http://10.1.127.197:8081/repository/Flexib-Reports/sast-reports/report-task.txt
         https://sonarcloud.io/dashboard?id=Shoppingcart
         --------------------------------------------------------------------------------------------------------------------------------------
         DAST REPORTS
-        http://192.168.1.6:8081/repository/Flexib-Reports/DAST-REPORTS/arachni-report-html-${BUILD_NUMBER}.zip
+        http://10.1.127.197:8081/repository/Flexib-Reports/DAST-REPORTS/arachni-report-html-${BUILD_NUMBER}.zip
         ----------------------------------------------------------------------------------------------------------------------------------------
         
         FUNCTIONAL AUTOMATION WEB REPORTS
-        http://192.168.1.6:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip
+        http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip
         ----------------------------------------------------------------------------------------------------------------------------------------
         FUNCTIONAL AUTOMATION MOBILE REPORTS
-        http://192.168.1.6:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip
+        http://10.1.127.197:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip
         ----------------------------------------------------------------------------------------------------------------------------------------
         
         JMETER REPORTS
-        http://192.168.1.6:8081/repository/Flexib-Reports/jmeter-test-report/jmeter/jmeter-test-report-${BUILD_NUMBER}.zip
+        http://10.1.127.197:8081/repository/Flexib-Reports/jmeter-test-report/jmeter/jmeter-test-report-${BUILD_NUMBER}.zip
         
         THE PIPELINE IS SUCCESSFUL AND THIS MAIL IS TO REQUEST FOR QA SIGNOFF AND PROCEED TO UAT OR PROD ENV
         
