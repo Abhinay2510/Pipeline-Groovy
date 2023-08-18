@@ -33,26 +33,21 @@ pipeline {
                 //sh "mvn -Dmaven.test.failure.ignore=true clean package"
             }
         } 
-	post {
-    success {
-        script {
-            def buildNumber = env.BUILD_NUMBER
-            def url = "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${buildNumber}.zip"
+	script {
+    def buildNumber = env.BUILD_NUMBER
+    def url = "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${buildNumber}.zip"
+    def reportFile = "sast-report-${buildNumber}.zip"
 
-            try {
-                bat 'curl -v -u admin:admin --upload-file "sast-report-' + buildNumber + '.zip" "' + url + '"'
-            } catch (Exception e) {
-                echo "Error uploading report: ${e.message}"
-                // Handle the error if needed
-            }
+    try {
+        dir("C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\Shoppingcart\\.scannerwork\\report-task.txt") {
+            bat 'curl -v -u admin:admin --upload-file "' + reportFile + '" "' + url + '"'
         }
+    } catch (Exception e) {
+        echo "Error uploading report: ${e.message}"
+        // Handle the error if needed
     }
-    failure {
-        script {
-            echo "SAST failed. Skipping report upload to Nexus."
-            // Handle failure if needed
-        }
-    }
+}
+
 }
 
 	}
