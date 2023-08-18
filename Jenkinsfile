@@ -34,25 +34,8 @@ pipeline {
             }
         } 
 	}
-		script {
-  		  def buildNumber = env.BUILD_NUMBER
-   		 def url = "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${buildNumber}.zip"
- 		   def reportFile = "sast-report-${buildNumber}.zip"
-
-    try {
-        dir("C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\Shoppingcart\\.scannerwork\\report-task.txt") {
-            bat 'curl -v -u admin:admin --upload-file "' + reportFile + '" "' + url + '"'
-        }
-    } catch (Exception e) {
-        echo "Error uploading report: ${e.message}"
-        // Handle the error if needed
-    }
 }
-
-}
-
-
-	    
+    
        stage('SCA') {
     steps {
         script {
@@ -206,19 +189,22 @@ pipeline {
 			    }	   
 		}    
 	}
-	 post {
-    success {
-        script {
-            // Upload reports to Nexus here
-           // bat 'curl -v -u admin:admin --upload-file "sast-report-%BUILD_NUMBER%.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-%BUILD_NUMBER%.zip"'
-            bat "curl -v -u admin:admin --upload-file \"${WORKSPACE}\\sast-report-${BUILD_NUMBER}.zip\" \"http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip\""
+	post {
+        success {
+            script {
+                try {
+                    // Upload reports to Nexus here
+                    bat "curl -v -u admin:admin --upload-file \"${WORKSPACE}\\sast-report-${BUILD_NUMBER}.zip\" \"http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip\""
 
-		// ...
+                    // ...
+                } catch (err) {
+                    echo err.getMessage()
+                }
+            }
         }
-    }
-    failure {
-        echo "One or more stages failed. Skipping report upload to Nexus."
-    }
+        failure {
+            echo "One or more stages failed. Skipping report upload to Nexus."
+        }
     always {
         // Clean after build
         mail to: "${env.EMAIL_ID}",
