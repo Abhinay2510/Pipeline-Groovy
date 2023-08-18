@@ -8,7 +8,7 @@ pipeline {
     }
 	
     stages {
-	    def stageResults = [:] // Define the stageResults map
+	   
             stage('load parameters') { 
             steps {
                 load "parameters.groovy"
@@ -17,8 +17,10 @@ pipeline {
 	
         stage('SAST Analysis') {
             steps {
-		    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE'){
                 script {
+			def stageResults = [:] // Define the stageResults map
+
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE'){
                     try {
                 // Get some code from a GitHub repository
 						if (env.SAST_GIT_URL != '') {				
@@ -45,8 +47,10 @@ pipeline {
     
        stage('SCA') {
     steps {
-        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
             script {
+		    def stageResults = [:] // Define the stageResults map
+
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE'){
                 try {
                     def dependencyCheckZipUrl = 'https://github.com/jeremylong/DependencyCheck/releases/download/v6.1.5/dependency-check-6.1.5-release.zip'
                     def dependencyCheckZipPath = "${WORKSPACE}\\dependency-check-6.1.5-release.zip"
@@ -78,8 +82,11 @@ pipeline {
 
 	stage('build') {
             steps {
-		catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+		
 				script {
+					def stageResults = [:] // Define the stageResults map
+
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE'){
 						try {
 						if (env.BUILD_GIT_URL != '') {
                 git "${env.BUILD_GIT_URL}"
@@ -101,8 +108,11 @@ pipeline {
 	}
      stage("deploy") {
          steps {
-		  catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+		  
 					script {
+						def stageResults = [:] // Define the stageResults map
+
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE'){
 						try {					
 						if (env.Deployment != '') {						
             deploy adapters: [tomcat8(credentialsId: 'tom', path: '', url: "${env.Deployment}")], contextPath: null, war: '**/*.war'
@@ -122,8 +132,11 @@ pipeline {
      }
         stage('DAST') {
             steps {
-		     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+		     
                 script {
+			def stageResults = [:] // Define the stageResults map
+
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE'){
                     try {
 						if (env.DAST_IP != '') {		    
                        arachniScanner checks: '*', format: 'html', url: "${env.DAST_URL}"
@@ -143,8 +156,11 @@ pipeline {
 	}
 	stage('FunctionalAutomation_Web') {
            			steps {
-					 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+					
 		   			script {
+						def stageResults = [:] // Define the stageResults map
+
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE'){
 						try {
 						if (env.FUNCTIONAL_WEB_GIT_URL != '') {						
 							bat  """ git clone ${env.FUNCTIONAL_WEB_GIT_URL}
@@ -166,8 +182,11 @@ pipeline {
 	}
 	stage('FunctionalAutomation_Mobile') {
             				steps {
-						 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+						
 		   			script {
+						def stageResults = [:] // Define the stageResults map
+
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE'){
 						try {
 						if (env.FUNCTIONAL_MOBILE_GIT_URL != '') {						
 							bat """ git clone ${env.FUNCTIONAL_MOBILE_GIT_URL}
@@ -189,8 +208,11 @@ pipeline {
 	}
 	        stage('Performance') {
             			steps {
-					 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+					 
 		   			script {
+						def stageResults = [:] // Define the stageResults map
+
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE'){
 						try {
 						if (env.JMETER_GIT_URL != '') {						
 							bat """
@@ -216,6 +238,7 @@ pipeline {
   	  	   stage('Nexus') {
             steps {
                 script {
+			 def stageResults = [:] // Define the stageResults map
                     if (stageResults.every { it.value == true }) {
 			     // Upload reports to Nexus here for this specific stage
                         bat """
