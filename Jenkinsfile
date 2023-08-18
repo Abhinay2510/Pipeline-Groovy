@@ -66,7 +66,7 @@ pipeline {
      	   }
    	 }
        }       
-	    
+       }    
 	stage('build') {
             steps {
 		catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
@@ -89,6 +89,7 @@ pipeline {
 				}							
             }
 	 }
+	}
      stage("deploy") {
          steps {
 		  catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
@@ -109,6 +110,7 @@ pipeline {
 					}
 				}
 	}
+     }
         stage('DAST') {
             steps {
 		     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
@@ -129,8 +131,8 @@ pipeline {
                 }
             }
         }	
-	
-	stage('FunctionalAutomation_Web') {
+	}
+	stage('FunctionalAutomation_Web') 
            			steps {
 					 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 		   			script {
@@ -174,6 +176,7 @@ pipeline {
 					}
 				}
 	}
+	}
 	        stage('Performance') {
             			steps {
 					 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
@@ -198,7 +201,8 @@ pipeline {
 							}
 					}
 			}
-		} 			
+		} 
+		}
   	  	   stage('Nexus') {
             steps {
                 script {
@@ -253,7 +257,4 @@ pipeline {
     }
 }
  }
-}
-}
-}
 }
