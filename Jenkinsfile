@@ -34,10 +34,10 @@ pipeline {
             }
         } 
 	
-	script {
-    def buildNumber = env.BUILD_NUMBER
-    def url = "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${buildNumber}.zip"
-    def reportFile = "sast-report-${buildNumber}.zip"
+		script {
+  		  def buildNumber = env.BUILD_NUMBER
+   		 def url = "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${buildNumber}.zip"
+ 		   def reportFile = "sast-report-${buildNumber}.zip"
 
     try {
         dir("C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\%JOB_NAME%\\Shoppingcart\\.scannerwork\\report-task.txt") {
