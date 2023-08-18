@@ -47,14 +47,17 @@ pipeline {
     
        stage('SCA') {
     steps {
-            script {
-		    def stageResults = [:] // Define the stageResults map
+        script {
+            def stageResults = [:] // Define the stageResults map
 
-                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE'){
+            catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                 try {
                     def dependencyCheckZipUrl = 'https://github.com/jeremylong/DependencyCheck/releases/download/v6.1.5/dependency-check-6.1.5-release.zip'
                     def dependencyCheckZipPath = "${WORKSPACE}\\dependency-check-6.1.5-release.zip"
                     def extractionPath = "${WORKSPACE}\\dependency-check-6.1.5-release"
+
+                    echo "Dependency Check Zip Path: ${dependencyCheckZipPath}"
+                    echo "Extraction Path: ${extractionPath}"
 
                     // Download the DependencyCheck release zip using curl
                     bat "curl -o ${dependencyCheckZipPath} ${dependencyCheckZipUrl}"
@@ -66,19 +69,20 @@ pipeline {
                     bat "\"${extractionPath}\\dependency-check\\bin\\dependency-check.bat\" --noupdate --project \"TeachersFCU\" --scan \"Shoppingcart/lib/\" --format HTML --out \"${WORKSPACE}\""
 
                     // Mark the stage as successful
-                    currentstage.resultIsSuccess = true
+                    currentBuild.resultIsSuccess = true
                 } catch (Exception err) {
                     echo "Error: ${err.getMessage()}"
                     unstable(message: "${STAGE_NAME} is unstable")
                     echo "Error detected, ${env.STAGE_NAME} failed..."
-                    
+
                     // Mark the stage as failed
-                    currentstage.resultIsSuccess = false
+                    currentBuild.resultIsSuccess = false
                 }
             }
         }
     }
 }
+
 
 	stage('build') {
             steps {
