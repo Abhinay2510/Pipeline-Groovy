@@ -37,7 +37,7 @@ pipeline {
     success {
         script {
             def buildNumber = env.BUILD_NUMBER
-            def url = "http://192.168.1.6:8081/repository/Flexib-Reports/sast-report/sast-report-${buildNumber}.zip"
+            def url = "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${buildNumber}.zip"
 
             try {
                 bat 'curl -v -u admin:admin --upload-file "sast-report-' + buildNumber + '.zip" "' + url + '"'
