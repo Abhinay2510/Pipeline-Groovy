@@ -43,7 +43,7 @@ pipeline {
     
        stage('SCA') {
     steps {
-        catchError(stageResult: 'UNSTABLE', stageResult: 'FAILURE') {
+        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
             script {
                 try {
                     def dependencyCheckZipUrl = 'https://github.com/jeremylong/DependencyCheck/releases/download/v6.1.5/dependency-check-6.1.5-release.zip'
