@@ -48,7 +48,7 @@ pipeline {
        stage('SCA') {
     steps {
         script {
-            def tempDir = bat(script: 'echo %TEMP%\\dependency-check-temp', returnStatus: true).trim()
+           def tempDir = bat(script: 'echo %TEMP%\\dependency-check-temp', returnStdout: true).trim()
 
             catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                 try {
