@@ -12,6 +12,7 @@ pipeline {
                 load "parameters.groovy"
             }
         }	
+	    def stageResults = [:]
         stage('SAST Analysis') {
             steps {
 		    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE'){
@@ -22,7 +23,7 @@ pipeline {
                 git "${env.SAST_GIT_URL}"
                 bat "git clone https://github.com/harishpallapu/sonarqube_scannar_windows.git"
                 bat "./sonarqube_scannar_windows/sonar-scanner-4.6.2.2472-windows/bin/sonar-scanner.bat"
-		currentStage.resultIsSuccess = true
+		stageResults['SAST Analysis'] = true
 						} else {
                                                         echo "skipping the stage ${env.STAGE_NAME}.............................!"
 							currentStage.resultIsSuccess = false
@@ -31,7 +32,7 @@ pipeline {
 							echo err.getMessage()
 							unstable(message: "${STAGE_NAME} is unstable")
 							echo "Error detected, ${env.STAGE_NAME} failed...............!"
-							
+							stageResults['SAST Analysis'] = false
 						}                
                 // Run Maven on a Unix agent.
                 //sh "mvn -Dmaven.test.failure.ignore=true clean package"
@@ -207,7 +208,7 @@ pipeline {
   	  	   stage('Nexus') {
             steps {
                 script {
-                    if (currentStage.resultIsSuccess) {
+                    if (stageResults.every { it.value == true }) {
 			     // Upload reports to Nexus here for this specific stage
                         bat """
                             curl -v -u admin:admin --upload-file "web-test-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip"
@@ -224,7 +225,7 @@ pipeline {
 	post {
    	 always {
 		 script {
-                if (currentStage.resultIsSuccess) {
+                if (stageResults.every { it.value == true }) {
         // Clean after build
         mail to: "${env.EMAIL_ID}",
         subject: "Status of pipeline: ${currentBuild.fullDisplayName}",
