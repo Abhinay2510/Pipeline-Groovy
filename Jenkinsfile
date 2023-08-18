@@ -14,6 +14,7 @@ pipeline {
         }	
         stage('SAST Analysis') {
             steps {
+		    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE'){
                 script {
                     try {
                 // Get some code from a GitHub repository
@@ -21,7 +22,7 @@ pipeline {
                 git "${env.SAST_GIT_URL}"
                 bat "git clone https://github.com/harishpallapu/sonarqube_scannar_windows.git"
                 bat "./sonarqube_scannar_windows/sonar-scanner-4.6.2.2472-windows/bin/sonar-scanner.bat"
-		currentStage.resultIsSuccess = true
+		
 						} else {
                                                         echo "skipping the stage ${env.STAGE_NAME}.............................!"
 							currentStage.resultIsSuccess = false
@@ -30,7 +31,7 @@ pipeline {
 							echo err.getMessage()
 							unstable(message: "${STAGE_NAME} is unstable")
 							echo "Error detected, ${env.STAGE_NAME} failed...............!"
-							currentStage.resultIsSuccess = false
+							
 						}                
                 // Run Maven on a Unix agent.
                 //sh "mvn -Dmaven.test.failure.ignore=true clean package"
@@ -41,6 +42,7 @@ pipeline {
     
        stage('SCA') {
     steps {
+	 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
         script {
             try {    
                 // Download the DependencyCheck release zip using curl
@@ -67,12 +69,13 @@ pipeline {
 	    
 	stage('build') {
             steps {
+		catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 				script {
 						try {
 						if (env.BUILD_GIT_URL != '') {
                 git "${env.BUILD_GIT_URL}"
 							bat 'mvn clean package'
-							currentStage.resultIsSuccess = true
+							
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'
 							currentStage.resultIsSuccess = false
@@ -81,13 +84,14 @@ pipeline {
 							echo err.getMessage()
 							unstable(message: "${STAGE_NAME} is unstable")
 							echo "Error detected, ${env.STAGE_NAME} failed..................!"
-							currentStage.resultIsSuccess = false
+						
 						}
 				}							
             }
 	 }
      stage("deploy") {
          steps {
+		  catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 					script {
 						try {					
 						if (env.Deployment != '') {						
@@ -100,13 +104,14 @@ pipeline {
 							echo err.getMessage()
 							unstable(message: "${STAGE_NAME} is unstable")
 							echo "Error detected, ${env.STAGE_NAME} failed..................!"
-							currentStage.resultIsSuccess = false
+						
 						}		
 					}
 				}
 	}
         stage('DAST') {
             steps {
+		     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                 script {
                     try {
 						if (env.DAST_IP != '') {		    
@@ -119,7 +124,7 @@ pipeline {
 							echo err.getMessage()
 							unstable(message: "${STAGE_NAME} is unstable")
 							echo "Error detected, ${env.STAGE_NAME} failed..................!" 
-			    				currentStage.resultIsSuccess = false
+			    			
                     }
                 }
             }
@@ -127,13 +132,14 @@ pipeline {
 	
 	stage('FunctionalAutomation_Web') {
            			steps {
+					 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 		   			script {
 						try {
 						if (env.FUNCTIONAL_WEB_GIT_URL != '') {						
 							bat  """ git clone ${env.FUNCTIONAL_WEB_GIT_URL}
 							cd web_auto/3i-Bank_FalconFramework
 							mvn test -Dtest=com.falcon.TestCases.FalconRunnabletest """
-							currentStage.resultIsSuccess = true
+							
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'
 							currentStage.resultIsSuccess = false
@@ -141,20 +147,21 @@ pipeline {
 							echo err.getMessage()
 							unstable(message: "${STAGE_NAME} is unstable")
 							echo "Error detected, ${env.STAGE_NAME} failed..................!"
-							currentStage.resultIsSuccess = false
+							
 						}					
 					}
 	 		}
 	 }
 	stage('FunctionalAutomation_Mobile') {
             				steps {
+						 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 		   			script {
 						try {
 						if (env.FUNCTIONAL_MOBILE_GIT_URL != '') {						
 							bat """ git clone ${env.FUNCTIONAL_MOBILE_GIT_URL}
 							cd mobiletest
 							mvn test """
-							currentStage.resultIsSuccess = true
+							
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'
 							currentStage.resultIsSuccess = false
@@ -162,13 +169,14 @@ pipeline {
 							echo err.getMessage()
 							unstable(message: "${STAGE_NAME} is unstable")
 							echo "Error detected, ${env.STAGE_NAME} failed..................!"
-							currentStage.resultIsSuccess = false
+							
 							}
 					}
 				}
 	}
 	        stage('Performance') {
             			steps {
+					 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 		   			script {
 						try {
 						if (env.JMETER_GIT_URL != '') {						
@@ -186,7 +194,7 @@ pipeline {
 							echo err.getMessage()
 							unstable(message: "${STAGE_NAME} is unstable")
 							echo "Error detected, ${env.STAGE_NAME} failed..................!"
-							currentStage.resultIsSuccess = false
+							
 							}
 					}
 			}
@@ -195,13 +203,14 @@ pipeline {
             steps {
                 script {
                     if (currentStage.resultIsSuccess) {
+			     // Upload reports to Nexus here for this specific stage
                         bat """
                             curl -v -u admin:admin --upload-file "web-test-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/web-test-report/web-test-report-${BUILD_NUMBER}.zip"
                             curl -v -u admin:admin --upload-file "mobile-test-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/mobile-test-report/mobile-test-report-${BUILD_NUMBER}.zip"
                             curl -v -u admin:admin --upload-file "sast-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip"
                         """
                     } else {
-                        echo "One or more stages failed. Skipping report upload to Nexus."
+                         echo "Stage ${env.STAGE_NAME} failed. Skipping report upload to Nexus."
                     }
                 }
             }
@@ -243,5 +252,5 @@ pipeline {
         For more information, please contact the DEVSECOPS team...........!"""
     }
 }
-	 }
-	}
+ }
+}
