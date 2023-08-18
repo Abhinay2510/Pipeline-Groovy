@@ -132,7 +132,7 @@ pipeline {
             }
         }	
 	}
-	stage('FunctionalAutomation_Web') 
+	stage('FunctionalAutomation_Web') {
            			steps {
 					 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 		   			script {
@@ -154,6 +154,7 @@ pipeline {
 					}
 	 		}
 	 }
+	}
 	stage('FunctionalAutomation_Mobile') {
             				steps {
 						 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
