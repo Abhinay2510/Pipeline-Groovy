@@ -33,6 +33,7 @@ pipeline {
                 //sh "mvn -Dmaven.test.failure.ignore=true clean package"
             }
         } 
+	
 	script {
     def buildNumber = env.BUILD_NUMBER
     def url = "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${buildNumber}.zip"
@@ -50,7 +51,7 @@ pipeline {
 
 }
 
-	}
+
 	    
        stage('SCA') {
     steps {
@@ -251,5 +252,5 @@ pipeline {
         For more information, please contact the DEVSECOPS team...........!"""
     }
 }
-
+}
 
