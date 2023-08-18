@@ -6,10 +6,9 @@ pipeline {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "M2_HOME"
     }
-	 environment {
-    stageResults = [:] // Define the stageResults map
-}
+	
     stages {
+	    def stageResults = [:] // Define the stageResults map
             stage('load parameters') { 
             steps {
                 load "parameters.groovy"
