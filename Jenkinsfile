@@ -22,7 +22,7 @@ pipeline {
                 git "${env.SAST_GIT_URL}"
                 bat "git clone https://github.com/harishpallapu/sonarqube_scannar_windows.git"
                 bat "./sonarqube_scannar_windows/sonar-scanner-4.6.2.2472-windows/bin/sonar-scanner.bat"
-		
+		currentStage.resultIsSuccess = true
 						} else {
                                                         echo "skipping the stage ${env.STAGE_NAME}.............................!"
 							currentStage.resultIsSuccess = false
@@ -75,7 +75,7 @@ pipeline {
 						if (env.BUILD_GIT_URL != '') {
                 git "${env.BUILD_GIT_URL}"
 							bat 'mvn clean package'
-							
+						currentStage.resultIsSuccess = true	
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'
 							currentStage.resultIsSuccess = false
@@ -141,7 +141,7 @@ pipeline {
 							bat  """ git clone ${env.FUNCTIONAL_WEB_GIT_URL}
 							cd web_auto/3i-Bank_FalconFramework
 							mvn test -Dtest=com.falcon.TestCases.FalconRunnabletest """
-							
+							currentStage.resultIsSuccess = true
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'
 							currentStage.resultIsSuccess = false
@@ -164,7 +164,7 @@ pipeline {
 							bat """ git clone ${env.FUNCTIONAL_MOBILE_GIT_URL}
 							cd mobiletest
 							mvn test """
-							
+							currentStage.resultIsSuccess = true
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'
 							currentStage.resultIsSuccess = false
