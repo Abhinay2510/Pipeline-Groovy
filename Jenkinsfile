@@ -65,14 +65,14 @@ pipeline {
                     bat "\"${extractionPath}\\dependency-check\\bin\\dependency-check.bat\" --noupdate --project \"TeachersFCU\" --scan \"Shoppingcart/lib/\" --format HTML --out \"${WORKSPACE}\""
 
                     // Mark the stage as successful
-                    currentBuild.resultIsSuccess = true
+                    currentstage.resultIsSuccess = true
                 } catch (Exception err) {
                     echo "Error: ${err.getMessage()}"
                     unstable(message: "${STAGE_NAME} is unstable")
                     echo "Error detected, ${env.STAGE_NAME} failed..."
 
                     // Mark the stage as failed
-                    currentBuild.resultIsSuccess = false
+                    currentstage.resultIsSuccess = false
                 }
             }
         }
