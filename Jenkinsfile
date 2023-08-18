@@ -48,7 +48,7 @@ pipeline {
        stage('SCA') {
     steps {
         script {
-           def tempDir = bat(script: 'echo %TEMP%\\dependency-check-temp', returnStdout: true).trim()
+            def tempDir = bat(script: 'echo %TEMP%\\dependency-check-temp', returnStdout: true).trim()
 
             catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                 try {
@@ -65,14 +65,14 @@ pipeline {
                     bat "\"${extractionPath}\\dependency-check\\bin\\dependency-check.bat\" --noupdate --project \"TeachersFCU\" --scan \"Shoppingcart/lib/\" --format HTML --out \"${WORKSPACE}\""
 
                     // Mark the stage as successful
-                    currentstage.resultIsSuccess = true
+                    currentStage.resultIsSuccess = true
                 } catch (Exception err) {
                     echo "Error: ${err.getMessage()}"
                     unstable(message: "${STAGE_NAME} is unstable")
                     echo "Error detected, ${env.STAGE_NAME} failed..."
 
                     // Mark the stage as failed
-                    currentstage.resultIsSuccess = false
+                    currentStage.resultIsSuccess = false
                 }
             }
         }
