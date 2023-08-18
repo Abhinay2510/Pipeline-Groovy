@@ -95,13 +95,13 @@ pipeline {
 						currentStage.resultIsSuccess = true	
 					        } else {
                                                         echo 'skipping the stage ${env.STAGE_NAME}.............................!'
-							currentStage.resultIsSuccess = false
+							
                                                         }							
 						} catch (err) {
 							echo err.getMessage()
 							unstable(message: "${STAGE_NAME} is unstable")
 							echo "Error detected, ${env.STAGE_NAME} failed..................!"
-						
+						currentStage.resultIsSuccess = false
 						}
 				}							
             }
