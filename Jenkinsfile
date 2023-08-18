@@ -7,8 +7,8 @@ pipeline {
         maven "M2_HOME"
     }
 	 environment {
-        stageResults = [:] // Define the stageResults map
-    }
+    stageResults = [:] // Define the stageResults map
+}
     stages {
             stage('load parameters') { 
             steps {
@@ -29,7 +29,7 @@ pipeline {
 		stageResults['SAST Analysis'] = true
 						} else {
                                                         echo "skipping the stage ${env.STAGE_NAME}.............................!"
-							currentStage.resultIsSuccess = false
+							
                    } } 
 			catch (err) {
 							echo err.getMessage()
@@ -225,8 +225,8 @@ pipeline {
                             curl -v -u admin:admin --upload-file "sast-report-${BUILD_NUMBER}.zip" "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/sast-report-${BUILD_NUMBER}.zip"
                         """
                     } else {
-                         echo "Stage ${env.STAGE_NAME} failed. Skipping report upload to Nexus."
-                    }
+                echo "At least one stage failed. Skipping report upload to Nexus."
+            }
                 }
             }
         }   
