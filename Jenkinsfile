@@ -43,31 +43,37 @@ pipeline {
     
        stage('SCA') {
     steps {
-	 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-        script {
-            try {    
-                // Download the DependencyCheck release zip using curl
-                bat 'curl -o dependency-check-6.1.5-release.zip https://github.com/jeremylong/DependencyCheck/releases/download/v6.1.5/dependency-check-6.1.5-release.zip'
-                
-                // Extract the downloaded zip using PowerShell
-                 bat "PowerShell Expand-Archive -Path \"${WORKSPACE}\\dependency-check-6.1.5-release.zip\" -DestinationPath \"${WORKSPACE}\""
-		// bat "PowerShell Expand-Archive -Path \"${WORKSPACE}\\dependency-check-6.2.2-release.zip\" \"${WORKSPACE}\""
+        catchError(stageResult: 'UNSTABLE', stageResult: 'FAILURE') {
+            script {
+                try {
+                    def dependencyCheckZipUrl = 'https://github.com/jeremylong/DependencyCheck/releases/download/v6.1.5/dependency-check-6.1.5-release.zip'
+                    def dependencyCheckZipPath = "${WORKSPACE}\\dependency-check-6.1.5-release.zip"
+                    def extractionPath = "${WORKSPACE}\\dependency-check-6.1.5-release"
 
-                // Run DependencyCheck
-                bat "\"${WORKSPACE}\\dependency-check-6.1.5-release\\dependency-check\\bin\\dependency-check.bat\" --noupdate --project \"TeachersFCU\" --scan \"Shoppingcart/lib/\" --format HTML --out \"${WORKSPACE}\""
-		currentStage.resultIsSuccess = true
-       		     } 
-		catch (err) {
-                echo err.getMessage()
-                unstable(message: "${STAGE_NAME} is unstable")
-                echo "Error detected, ${env.STAGE_NAME} failed..................!"
-		 currentStage.resultIsSuccess = false
-    	        }
-		
-     	   }
-   	 }
-       }       
-       }    
+                    // Download the DependencyCheck release zip using curl
+                    bat "curl -o ${dependencyCheckZipPath} ${dependencyCheckZipUrl}"
+
+                    // Extract the downloaded zip using PowerShell
+                    bat "PowerShell Expand-Archive -Path \"${dependencyCheckZipPath}\" -DestinationPath \"${extractionPath}\""
+
+                    // Run DependencyCheck
+                    bat "\"${extractionPath}\\dependency-check\\bin\\dependency-check.bat\" --noupdate --project \"TeachersFCU\" --scan \"Shoppingcart/lib/\" --format HTML --out \"${WORKSPACE}\""
+
+                    // Mark the stage as successful
+                    currentstage.resultIsSuccess = true
+                } catch (Exception err) {
+                    echo "Error: ${err.getMessage()}"
+                    unstable(message: "${STAGE_NAME} is unstable")
+                    echo "Error detected, ${env.STAGE_NAME} failed..."
+                    
+                    // Mark the stage as failed
+                    currentstage.resultIsSuccess = false
+                }
+            }
+        }
+    }
+}
+
 	stage('build') {
             steps {
 		catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
