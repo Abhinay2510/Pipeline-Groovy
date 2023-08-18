@@ -46,40 +46,42 @@ pipeline {
 }
     
        stage('SCA') {
-    steps {
-        script {
-            def tempDir = bat(script: 'echo %TEMP%\\dependency-check-temp', returnStdout: true).trim()
+            steps {
+                script {
+                    def tempDir = bat(script: 'echo %TEMP%\\dependency-check-temp', returnStdout: true).trim()
 
-            catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                try {
-                    def dependencyCheckZipUrl = 'https://github.com/jeremylong/DependencyCheck/releases/download/v6.1.5/dependency-check-6.1.5-release.zip'
-                    def dependencyCheckZipPath = "${tempDir}\\dependency-check-6.1.5-release.zip"
-                    def extractionPath = "${tempDir}\\dependency-check-6.1.5-release"
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                        try {
+                            def dependencyCheckZipUrl = 'https://github.com/jeremylong/DependencyCheck/releases/download/v6.1.5/dependency-check-6.1.5-release.zip'
+                            def dependencyCheckZipPath = "${tempDir}\\dependency-check-6.1.5-release.zip"
+                            def extractionPath = "${tempDir}\\dependency-check-6.1.5-release"
 
-                    bat "curl -o \"${dependencyCheckZipPath}\" ${dependencyCheckZipUrl}"
+                            bat "curl -o \"${dependencyCheckZipPath}\" ${dependencyCheckZipUrl}"
 
-                    // Extract the downloaded zip using PowerShell
-                    bat "PowerShell Expand-Archive -Path \"${dependencyCheckZipPath}\" -DestinationPath \"${extractionPath}\""
+                            // Extract the downloaded zip using PowerShell
+                            bat "PowerShell Expand-Archive -Path \"${dependencyCheckZipPath}\" -DestinationPath \"${extractionPath}\""
 
-                    // Run DependencyCheck
-                    bat "\"${extractionPath}\\dependency-check\\bin\\dependency-check.bat\" --noupdate --project \"TeachersFCU\" --scan \"Shoppingcart/lib/\" --format HTML --out \"${WORKSPACE}\""
+                            // Run DependencyCheck
+                            bat "\"${extractionPath}\\dependency-check\\bin\\dependency-check.bat\" --noupdate --project \"TeachersFCU\" --scan \"Shoppingcart/lib/\" --format HTML --out \"${WORKSPACE}\""
 
-                    // Mark the stage as successful
-                    currentStage.resultIsSuccess = true
-                } catch (Exception err) {
-                    echo "Error: ${err.getMessage()}"
-                    unstable(message: "${STAGE_NAME} is unstable")
-                    echo "Error detected, ${env.STAGE_NAME} failed..."
-
-                    // Mark the stage as failed
-                    currentStage.resultIsSuccess = false
+                            // If the stage was successful, publish the report to Nexus
+                            if (currentBuild.resultIsSuccess) {
+                                // Upload the report to Nexus repository
+                                def reportFileName = "sast-report-${BUILD_NUMBER}.zip"
+                                def nexusUrl = "http://10.1.127.197:8081/repository/Flexib-Reports/sast-report/${reportFileName}"
+                                bat "curl -v -u admin:admin --upload-file \"${reportFileName}\" \"${nexusUrl}\""
+                            }
+                        } catch (Exception err) {
+                            currentBuild.resultIsSuccess = false
+                            echo "Error: ${err.getMessage()}"
+                            unstable(message: "${STAGE_NAME} is unstable")
+                            echo "Error detected, ${env.STAGE_NAME} failed..."
+                            error("Stage failed: ${STAGE_NAME}")
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-
 
 	stage('build') {
             steps {
