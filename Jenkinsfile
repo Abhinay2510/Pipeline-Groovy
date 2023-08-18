@@ -48,7 +48,7 @@ pipeline {
        stage('SCA') {
     steps {
         script {
-            def tempDir = bat(script: 'mktemp -d', returnStatus: true).trim()
+            def tempDir = bat(script: 'echo %TEMP%\\dependency-check-temp', returnStatus: true).trim()
 
             catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                 try {
@@ -56,8 +56,7 @@ pipeline {
                     def dependencyCheckZipPath = "${tempDir}\\dependency-check-6.1.5-release.zip"
                     def extractionPath = "${tempDir}\\dependency-check-6.1.5-release"
 
-                    // Download the DependencyCheck release zip using curl
-                    bat "curl -o ${dependencyCheckZipPath} ${dependencyCheckZipUrl}"
+                    bat "curl -o \"${dependencyCheckZipPath}\" ${dependencyCheckZipUrl}"
 
                     // Extract the downloaded zip using PowerShell
                     bat "PowerShell Expand-Archive -Path \"${dependencyCheckZipPath}\" -DestinationPath \"${extractionPath}\""
@@ -74,8 +73,6 @@ pipeline {
 
                     // Mark the stage as failed
                     currentBuild.resultIsSuccess = false
-                } finally {
-                    bat "rd /s /q ${tempDir}" // Clean up the temporary directory
                 }
             }
         }
